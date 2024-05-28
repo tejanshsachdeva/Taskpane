@@ -79,7 +79,7 @@ function sortColumns() {
       : b.textContent.localeCompare(a.textContent, undefined, { caseFirst: 'lower' });
   });
 
-  columnList.innerHTML = "";  
+  columnList.innerHTML = "";
   items.forEach((item) => {
     columnList.appendChild(item);
   });
