@@ -20,14 +20,12 @@ async function loadColumns() {
     const columnList = document.getElementById("columnList");
     columnList.innerHTML = "";
 
-    headers.forEach((header, index) => {  
-      if (header) { // Check if the header is not empty
-        const columnDiv = document.createElement("div");
-        columnDiv.textContent = header;
-        columnDiv.classList.add("column-item");
-        columnDiv.addEventListener("click", () => selectColumn(index));
-        columnList.appendChild(columnDiv);
-      }
+    headers.forEach((header, index) => {
+      const columnDiv = document.createElement("div");
+      columnDiv.textContent = header || "<missing name>";
+      columnDiv.classList.add("column-item");
+      columnDiv.addEventListener("click", () => selectColumn(index));
+      columnList.appendChild(columnDiv);
     });
   });
 }
