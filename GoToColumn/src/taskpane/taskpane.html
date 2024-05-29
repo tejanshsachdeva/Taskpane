@@ -1,30 +1,23 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Go To Column</title>
-    <!-- Your script file -->
     <script src="taskpane.ts"></script>
-
-    <!-- Office JavaScript API -->
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js"></script>
-
-    <!-- For more information on Fluent UI, visit https://developer.microsoft.com/fluentui#/. -->
     <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/11.0.0/css/fabric.min.css"/>
-
-    <!-- Template styles -->
     <link href="taskpane.css" rel="stylesheet" type="text/css" />
 </head>
-
 <body class="ms-font-m ms-welcome ms-Fabric">
     <div id="container">
         <select id="sheetDropdown" style="margin-bottom: 10px;"></select>
         <input type="text" id="searchBox" placeholder="Search for a column.." style="margin-bottom: 10px;" />
         <div id="columnList"></div>
         <button id="sortButton">Sort (A-Z)</button>
+        <button id="hideButton" style="display: none;">Hide Column</button>
+        <button id="unhideButton" style="display: none;">Unhide Column</button>
     </div>
     <section id="sideload-msg" class="ms-welcome__main">
         <h2 class="ms-font-xl">Please <a target="_blank" href="https://learn.microsoft.com/office/dev/add-ins/testing/test-debug-office-add-ins#sideload-an-office-add-in-for-testing">sideload</a> your add-in to see app body.</h2>
@@ -33,5 +26,4 @@
         <p><label id="item-subject"></label></p>
     </main>
 </body>
-
 </html>

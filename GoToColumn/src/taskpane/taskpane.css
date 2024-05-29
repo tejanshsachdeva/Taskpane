@@ -118,3 +118,11 @@ b {
   #sortButton:hover {
     background-color: #005a9e;
   }
+  .column-item {
+    cursor: pointer;
+  }
+  
+  .column-item.hidden {
+    color: red;
+  }
+  

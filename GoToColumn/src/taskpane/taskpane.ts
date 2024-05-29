@@ -8,9 +8,14 @@ Office.onReady((info) => {
     document.getElementById("sortButton").addEventListener("click", sortColumns);
     document.getElementById("sheetDropdown").addEventListener("change", loadColumns);
 
+    // Attach event listeners for hide/unhide buttons
+    document.getElementById("hideButton").addEventListener("click", hideColumn);
+    document.getElementById("unhideButton").addEventListener("click", unhideColumn);
+
     loadSheets();
   }
 });
+
 
 async function loadSheets() {
   await Excel.run(async (context) => {
@@ -90,7 +95,14 @@ function sortColumns() {
   isAscending = !isAscending; // Toggle the order for the next click
 }
 
+let selectedColumnIndex: number = -1; // Store the selected column index
+
 async function selectColumn(index: number) {
+  selectedColumnIndex = index; // Update the selected column index
+
+  document.getElementById("hideButton").style.display = "block";
+  document.getElementById("unhideButton").style.display = "block";
+
   await Excel.run(async (context) => {
     const sheetName = (document.getElementById("sheetDropdown") as HTMLSelectElement).value;
     const sheet = context.workbook.worksheets.getItem(sheetName);
@@ -98,6 +110,31 @@ async function selectColumn(index: number) {
     const column = range.getColumn(index);
 
     column.select();
+    await context.sync();
+  });
+}
+
+
+async function hideColumn() {
+  await Excel.run(async (context) => {
+    const sheetName = (document.getElementById("sheetDropdown") as HTMLSelectElement).value;
+    const sheet = context.workbook.worksheets.getItem(sheetName);
+    const range = sheet.getUsedRange();
+    const column = range.getColumn(selectedColumnIndex); // Use the selected column index
+
+    column.columnHidden = true;
+    await context.sync();
+  });
+}
+
+async function unhideColumn() {
+  await Excel.run(async (context) => {
+    const sheetName = (document.getElementById("sheetDropdown") as HTMLSelectElement).value;
+    const sheet = context.workbook.worksheets.getItem(sheetName);
+    const range = sheet.getUsedRange();
+    const column = range.getColumn(selectedColumnIndex); // Use the selected column index
+
+    column.columnHidden = false;
     await context.sync();
   });
 }
