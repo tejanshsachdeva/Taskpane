@@ -1,4 +1,5 @@
 let isAscending = true; // Ensure this line is at the top level of your script
+let selectedColumnIndex: number = -1; // Store the selected column index
 
 Office.onReady((info) => {
   if (info.host === Office.HostType.Excel) {
@@ -8,14 +9,12 @@ Office.onReady((info) => {
     document.getElementById("sortButton").addEventListener("click", sortColumns);
     document.getElementById("sheetDropdown").addEventListener("change", loadColumns);
 
-    // Attach event listeners for hide/unhide buttons
-    document.getElementById("hideButton").addEventListener("click", hideColumn);
-    document.getElementById("unhideButton").addEventListener("click", unhideColumn);
+    // Attach event listener for the hide/unhide button
+    document.getElementById("toggleHideButton").addEventListener("click", toggleHideUnhide);
 
     loadSheets();
   }
 });
-
 
 async function loadSheets() {
   await Excel.run(async (context) => {
@@ -40,26 +39,47 @@ async function loadSheets() {
 
 async function loadColumns() {
   await Excel.run(async (context) => {
-    const sheetName = (document.getElementById("sheetDropdown") as HTMLSelectElement).value;
-    const sheet = context.workbook.worksheets.getItem(sheetName);
-    const range = sheet.getUsedRange();
-    range.load("values, address");
+      const sheetName = (document.getElementById("sheetDropdown") as HTMLSelectElement).value;
+      const sheet = context.workbook.worksheets.getItem(sheetName);
+      const range = sheet.getUsedRange();
+      range.load("values, address");
 
-    await context.sync();
+      await context.sync();
 
-    const headers = range.values[0];
-    const columnList = document.getElementById("columnList");
-    columnList.innerHTML = "";
+      const headers = range.values[0];
+      const columnList = document.getElementById("columnList");
+      columnList.innerHTML = "";
 
-    headers.forEach((header, index) => {
-      const columnDiv = document.createElement("div");
-      columnDiv.textContent = header || "<missing name>";
-      columnDiv.classList.add("column-item");
-      columnDiv.addEventListener("click", () => selectColumn(index));
-      columnList.appendChild(columnDiv);
-    });
+      // Array to hold column objects for loading columnHidden property
+      const columns = [];
+
+      headers.forEach((header, index) => {
+          const columnDiv = document.createElement("div");
+          columnDiv.textContent = header || "<missing name>";
+          columnDiv.classList.add("column-item");
+
+          // Load column hidden state
+          const column = range.getColumn(index);
+          column.load("columnHidden");
+          columns.push(column);
+
+          columnDiv.addEventListener("click", () => selectColumn(index));
+          columnList.appendChild(columnDiv);
+      });
+
+      await context.sync();
+
+      // Apply the hidden-column class based on the hidden state
+      columns.forEach((column, index) => {
+          const columnDiv = columnList.children[index] as HTMLElement;
+          if (column.columnHidden) {
+              columnDiv.classList.add("hidden-column");
+          }
+      });
   });
 }
+
+
 
 function filterColumns(event) {
   const query = event.target.value.toLowerCase();
@@ -95,46 +115,55 @@ function sortColumns() {
   isAscending = !isAscending; // Toggle the order for the next click
 }
 
-let selectedColumnIndex: number = -1; // Store the selected column index
-
 async function selectColumn(index: number) {
   selectedColumnIndex = index; // Update the selected column index
 
-  document.getElementById("hideButton").style.display = "block";
-  document.getElementById("unhideButton").style.display = "block";
+  // Show the toggle button
+  const toggleButton = document.getElementById("toggleHideButton");
+  toggleButton.style.display = "block";
 
   await Excel.run(async (context) => {
-    const sheetName = (document.getElementById("sheetDropdown") as HTMLSelectElement).value;
-    const sheet = context.workbook.worksheets.getItem(sheetName);
-    const range = sheet.getUsedRange();
-    const column = range.getColumn(index);
+      const sheetName = (document.getElementById("sheetDropdown") as HTMLSelectElement).value;
+      const sheet = context.workbook.worksheets.getItem(sheetName);
+      const range = sheet.getUsedRange();
+      const column = range.getColumn(index);
 
-    column.select();
-    await context.sync();
+      column.load("columnHidden");
+      await context.sync();
+
+      // Update button text based on column's current state
+      toggleButton.textContent = column.columnHidden ? "Unhide Column" : "Hide Column";
+
+      column.select();
+      await context.sync();
   });
 }
 
-
-async function hideColumn() {
+async function toggleHideUnhide() {
   await Excel.run(async (context) => {
-    const sheetName = (document.getElementById("sheetDropdown") as HTMLSelectElement).value;
-    const sheet = context.workbook.worksheets.getItem(sheetName);
-    const range = sheet.getUsedRange();
-    const column = range.getColumn(selectedColumnIndex); // Use the selected column index
+      const sheetName = (document.getElementById("sheetDropdown") as HTMLSelectElement).value;
+      const sheet = context.workbook.worksheets.getItem(sheetName);
+      const range = sheet.getUsedRange();
+      const column = range.getColumn(selectedColumnIndex); // Use the selected column index
 
-    column.columnHidden = true;
-    await context.sync();
+      column.load("columnHidden");
+      await context.sync();
+
+      // Toggle the hidden state of the column
+      column.columnHidden = !column.columnHidden;
+      await context.sync();
+
+      // Update button text based on the new state
+      const toggleButton = document.getElementById("toggleHideButton");
+      toggleButton.textContent = column.columnHidden ? "Unhide Column" : "Hide Column";
+
+      // Update the CSS class of the column item based on the new state
+      const columnDiv = document.getElementById("columnList").children[selectedColumnIndex] as HTMLElement;
+      if (column.columnHidden) {
+          columnDiv.classList.add("hidden-column");
+      } else {
+          columnDiv.classList.remove("hidden-column");
+      }
   });
 }
 
-async function unhideColumn() {
-  await Excel.run(async (context) => {
-    const sheetName = (document.getElementById("sheetDropdown") as HTMLSelectElement).value;
-    const sheet = context.workbook.worksheets.getItem(sheetName);
-    const range = sheet.getUsedRange();
-    const column = range.getColumn(selectedColumnIndex); // Use the selected column index
-
-    column.columnHidden = false;
-    await context.sync();
-  });
-}
