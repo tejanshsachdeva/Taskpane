@@ -1,120 +1,153 @@
-/* /*
- * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
- * See LICENSE in the project root for license information.
- */
+#dropdownContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
 
- html,
- body {
-     width: 100%;
-     height: 100%;
-     margin: 0;
-     padding: 0;
- }
+#sheetDropdown {
+  margin-right: 10px;
+  padding: 5px 10px;
+  background-color: #0078d4;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
- ul {
-     margin: 0;
-     padding: 0;
- }
+#sortButton {
+  padding: 5px 10px;
+  background-color: #0078d4;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
- .ms-welcome__header {
-    padding: 20px;
-    padding-bottom: 30px;
-    padding-top: 100px;
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-direction: column;
-    flex-direction: column;
-    align-items: center;
- }
+#sortButton:hover {
+  background-color: #005a9e;
+}
 
- .ms-welcome__main {
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-direction: column;
-    flex-direction: column;
-    -webkit-flex-wrap: nowrap;
-    flex-wrap: nowrap;
-    -webkit-align-items: center;
-    align-items: center;
-    -webkit-flex: 1 0 0;
-    flex: 1 0 0;
-    padding: 10px 20px;
- }
+#toggleHideButton {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #0078d4;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
- .ms-welcome__main > h2 {
-     width: 100%;
-     text-align: center;
- }
+#toggleHideButton:hover {
+  background-color: #005a9e;
+}
 
- .ms-welcome__features {
-     list-style-type: none;
-     margin-top: 20px;
- }
+/* Other existing styles */
 
- .ms-welcome__features.ms-List .ms-ListItem {
-     padding-bottom: 20px;
-     display: -webkit-flex;
-     display: flex;
- }
+#searchBox {
+  margin-bottom: 10px;
+  width: 98%;
+  padding: 5px;
+}
 
- .ms-welcome__features.ms-List .ms-ListItem > .ms-Icon {
-     margin-right: 10px;
- }
+#columnList {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+}
 
- .ms-welcome__action.ms-Button--hero {
-     margin-top: 30px;
- }
+.column-item {
+  padding: 5px;
+  cursor: pointer;
+}
+
+.column-item:hover {
+  background-color: #f0f0f0;
+}
+
+.column-item.hidden {
+  color: red;
+}
+
+.hidden-column {
+  color: red;
+}
 
 .ms-Button.ms-Button--hero .ms-Button-label {
   color: #0078d7;
 }
 
 .ms-Button.ms-Button--hero:hover .ms-Button-label,
-.ms-Button.ms-Button--hero:focus .ms-Button-label{
+.ms-Button.ms-Button--hero:focus .ms-Button-label {
   color: #005a9e;
   cursor: pointer;
 }
 
 b {
-    font-weight: bold;
-    font-color:white;
+  font-weight: bold;
+  font-color: white;
 }
 
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+.ms-welcome__header {
+  padding: 20px;
+  padding-bottom: 30px;
+  padding-top: 100px;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ms-welcome__main {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-flex: 1 0 0;
+  flex: 1 0 0;
+  padding: 10px 20px;
+}
+
+.ms-welcome__main > h2 {
+  width: 100%;
+  text-align: center;
+}
+
+.ms-welcome__features {
+  list-style-type: none;
+  margin-top: 20px;
+}
+
+.ms-welcome__features.ms-List .ms-ListItem {
+  padding-bottom: 20px;
+  display: -webkit-flex;
+  display: flex;
+}
+
+.ms-welcome__features.ms-List .ms-ListItem > .ms-Icon {
+  margin-right: 10px;
+}
+
+.ms-welcome__action.ms-Button--hero {
+  margin-top: 30px;
+}
 
 #container {
-    padding: 10px;
-  }
-
-  #searchBox {
-    margin-bottom: 10px;
-    width: 98%;
-    padding: 5px;
-  }
-
-  #columnList {
-    max-height: 300px;
-    overflow-y: auto;
-    border: 1px solid #ccc;
-  }
-
-  .column-item {
-    padding: 5px;
-    cursor: pointer;
-  }
-
-  .column-item:hover {
-    background-color: #f0f0f0;
-  }
-  #sortButton {
-    margin-top: 10px;
-    padding: 5px 10px;
-    background-color: #0078d4;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-
-  #sortButton:hover {
-    background-color: #005a9e;
-  }
+  padding: 10px;
+}
