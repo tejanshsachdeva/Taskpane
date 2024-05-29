@@ -12,11 +12,13 @@
 </head>
 <body class="ms-font-m ms-welcome ms-Fabric">
     <div id="container">
-        <select id="sheetDropdown" style="margin-bottom: 10px;"></select>
+        <!-- Wrap the dropdown and button in a container div -->
+        <div id="dropdownContainer" style="display: flex; justify-content: space-between;">
+            <select id="sheetDropdown"></select>
+            <button id="sortButton">Sort (A-Z)</button>
+        </div>
         <input type="text" id="searchBox" placeholder="Search for a column.." style="margin-bottom: 10px;" />
         <div id="columnList"></div>
-        <button id="sortButton">Sort (A-Z)</button>
-        <!-- Replace separate hide and unhide buttons with a single toggle button -->
         <button id="toggleHideButton" style="display: none;">Hide Column</button>
     </div>
     <section id="sideload-msg" class="ms-welcome__main">
