@@ -115,7 +115,11 @@ function sortColumns() {
 
   if (sortState === 0) {
     // Reset to default order
-    items.sort((a, b) => originalOrder.indexOf(a.textContent) - originalOrder.indexOf(b.textContent));
+    items.sort((a, b) => {
+      const aName = a.textContent.split(" ")[0]; // Extract the column name
+      const bName = b.textContent.split(" ")[0]; // Extract the column name
+      return originalOrder.indexOf(aName) - originalOrder.indexOf(bName);
+    });
     sortButton.textContent = "Sort (A-Z)";
     sortState = 1;
   } else if (sortState === 1) {
