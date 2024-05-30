@@ -59,7 +59,8 @@ async function loadColumns() {
 
     headers.forEach((header, index) => {
       const columnDiv = document.createElement("div");
-      columnDiv.textContent = header || "<missing name>";
+      const columnLetter = getColumnLetter(index + 1); // Get column letter
+      columnDiv.textContent = `${header} (${columnLetter})` || "<missing name>";
       columnDiv.classList.add("column-item");
 
       // Load column hidden state
@@ -82,6 +83,18 @@ async function loadColumns() {
     });
   });
 }
+
+// Helper function to convert column index to letter
+function getColumnLetter(index: number): string {
+  let letter = '';
+  while (index > 0) {
+    const mod = (index - 1) % 26;
+    letter = String.fromCharCode(65 + mod) + letter;
+    index = Math.floor((index - mod) / 26);
+  }
+  return letter;
+}
+
 
 function filterColumns(event) {
   const query = event.target.value.toLowerCase();
