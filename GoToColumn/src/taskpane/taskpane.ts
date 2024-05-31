@@ -13,11 +13,11 @@ Office.onReady((info) => {
     document.getElementById("toggleHideButton").addEventListener("click", toggleHideUnhide);
     document.getElementById("toggleLockButton").addEventListener("click", toggleLockSheet); // Always show the lock sheet button
     document.getElementById("showProfileCheckbox").addEventListener("change", toggleProfileVisibility);
+    // document.getElementById("refreshButton").addEventListener("click", refreshAddIn); // Add this line
 
     loadSheets();
   }
 });
-
 async function loadSheets() {
   await Excel.run(async (context) => {
     const sheets = context.workbook.worksheets;
