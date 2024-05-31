@@ -153,7 +153,7 @@ async function selectColumn(index: number) {
     const range = sheet.getUsedRange();
     const column = range.getColumn(index);
 
-    column.load("columnHidden");
+    column.load("values, columnHidden");
     await context.sync();
 
     // Update button text based on column's current state
@@ -161,6 +161,10 @@ async function selectColumn(index: number) {
 
     column.select();
     await context.sync();
+
+    // Calculate and display column profile
+    displayColumnProfile(column.values);
+
   });
 }
 
@@ -190,4 +194,35 @@ async function toggleHideUnhide() {
       columnDiv.classList.remove("hidden-column");
     }
   });
+}
+function displayColumnProfile(values: any[][]) {
+  const totalCount = values.length;
+  const errorCount = values.filter(row => row[0] instanceof Error).length;
+  const emptyCount = values.filter(row => row[0] === null || row[0] === '').length;
+  const distinctValues = [...new Set(values.map(row => row[0]))];
+  const distinctCount = distinctValues.length;
+  const uniqueCount = distinctValues.filter(value => values.filter(row => row[0] === value).length === 1).length;
+  const nanCount = values.filter(row => typeof row[0] === 'number' && isNaN(row[0])).length;
+
+  let numericValues = values.filter(row => typeof row[0] === 'number' && !isNaN(row[0])).map(row => row[0]);
+  let minValue, maxValue, averageValue;
+
+  if (numericValues.length > 0) {
+    minValue = Math.min(...numericValues);
+    maxValue = Math.max(...numericValues);
+    averageValue = numericValues.reduce((acc, val) => acc + val, 0) / numericValues.length;
+  } else {
+    minValue = maxValue = averageValue = "N/A";
+  }
+
+  // Update the UI
+  document.getElementById("totalCount").textContent = totalCount.toString();
+  document.getElementById("errorCount").textContent = errorCount.toString();
+  document.getElementById("emptyCount").textContent = emptyCount.toString();
+  document.getElementById("distinctCount").textContent = distinctCount.toString();
+  document.getElementById("uniqueCount").textContent = uniqueCount.toString();
+  document.getElementById("nanCount").textContent = nanCount.toString();
+  document.getElementById("minValue").textContent = minValue.toString();
+  document.getElementById("maxValue").textContent = maxValue.toString();
+  document.getElementById("averageValue").textContent = averageValue.toString();
 }
