@@ -12,10 +12,21 @@ Office.onReady((info) => {
     document.getElementById("sheetDropdown").addEventListener("change", loadColumns);
     document.getElementById("toggleHideButton").addEventListener("click", toggleHideUnhide);
     document.getElementById("showProfileCheckbox").addEventListener("change", toggleProfileVisibility);
+    // document.getElementById("refreshButton").addEventListener("click", refreshAddIn); // Add this line
 
     loadSheets();
   }
 });
+// async function refreshAddIn() {
+//   // Reset relevant state variables if necessary
+//   isAscending = true;
+//   selectedColumnIndex = -1;
+//   originalOrder = [];
+//   sortState = 0;
+
+//   // Reload the sheets and columns
+//   await loadSheets();
+// }
 
 async function loadSheets() {
   await Excel.run(async (context) => {
