@@ -243,14 +243,6 @@ function sortColumns() {
   columns.forEach((column) => columnList.appendChild(column));
 }
 
-function toggleProfileVisibility() {
-  const showProfile = (document.getElementById("showProfileCheckbox") as HTMLInputElement).checked;
-  if (showProfile) {
-    displayColumnProfile();
-  } else {
-    hideColumnProfile();
-  }
-}
 
 function getColumnLetter(columnNumber: number): string {
   let columnLetter = "";
@@ -262,10 +254,49 @@ function getColumnLetter(columnNumber: number): string {
   return columnLetter;
 }
 
-function displayColumnProfile(values: any) {
-  // Implement logic to display column profile
+function displayColumnProfile(values: any[][]) {
+  const totalCount = values.length;
+  const errorCount = values.filter(row => row[0] instanceof Error).length;
+  const emptyCount = values.filter(row => row[0] === null || row[0] === '').length;
+  const distinctValues = [...new Set(values.map(row => row[0]))];
+  const distinctCount = distinctValues.length;
+  const uniqueCount = distinctValues.filter(value => values.filter(row => row[0] === value).length === 1).length;
+  const nanCount = values.filter(row => typeof row[0] === 'number' && isNaN(row[0])).length;
+
+  let numericValues = values.filter(row => typeof row[0] === 'number' && !isNaN(row[0])).map(row => row[0]);
+  let minValue, maxValue, averageValue;
+
+  if (numericValues.length > 0) {
+    minValue = Math.min(...numericValues);
+    maxValue = Math.max(...numericValues);
+    averageValue = numericValues.reduce((acc, val) => acc + val, 0) / numericValues.length;
+  } else {
+    minValue = maxValue = averageValue = "N/A";
+  }
+
+  // Update the UI
+  document.getElementById("totalCount").textContent = totalCount.toString();
+  document.getElementById("errorCount").textContent = errorCount.toString();
+  document.getElementById("emptyCount").textContent = emptyCount.toString();
+  document.getElementById("distinctCount").textContent = distinctCount.toString();
+  document.getElementById("uniqueCount").textContent = uniqueCount.toString();
+  document.getElementById("nanCount").textContent = nanCount.toString();
+  document.getElementById("minValue").textContent = minValue.toString();
+  document.getElementById("maxValue").textContent = maxValue.toString();
+  document.getElementById("averageValue").textContent = averageValue.toString();
+
+  // Show the column profile section
+  document.getElementById("columnProfile").style.display = "block";
 }
 
 function hideColumnProfile() {
-  // Implement logic to hide column profile
+  // Hide the column profile section
+  document.getElementById("columnProfile").style.display = "none";
+}
+
+function toggleProfileVisibility(event) {
+  const checkbox = event.target as HTMLInputElement;
+  if (!checkbox.checked) {
+    hideColumnProfile();
+  }
 }
