@@ -1,6 +1,7 @@
 #dropdownContainer {
   display: flex;
   align-items: center;
+  justify-content: space-between; /* Added to evenly distribute the dropdown and sort button */
   margin-bottom: 10px;
 }
 
@@ -27,7 +28,8 @@
   background-color: #005a9e;
 }
 
-#toggleHideButton {
+#toggleHideButton,
+#toggleLockButton { /* Added to target both buttons */
   margin-top: 10px;
   padding: 5px 10px;
   background-color: #0078d4;
@@ -37,7 +39,8 @@
   cursor: pointer;
 }
 
-#toggleHideButton:hover {
+#toggleHideButton:hover,
+#toggleLockButton:hover { /* Added to target both buttons */
   background-color: #005a9e;
 }
 
@@ -87,7 +90,8 @@ b {
   font-color: white;
 }
 
-html, body {
+html,
+body {
   width: 100%;
   height: 100%;
   margin: 0;

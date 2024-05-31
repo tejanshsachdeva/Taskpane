@@ -11,6 +11,7 @@ Office.onReady((info) => {
     document.getElementById("sortButton").addEventListener("click", sortColumns);
     document.getElementById("sheetDropdown").addEventListener("change", loadColumns);
     document.getElementById("toggleHideButton").addEventListener("click", toggleHideUnhide);
+    document.getElementById("toggleLockButton").addEventListener("click", toggleLockSheet); // Always show the lock sheet button
     document.getElementById("showProfileCheckbox").addEventListener("change", toggleProfileVisibility);
 
     loadSheets();
@@ -41,6 +42,11 @@ async function loadSheets() {
 async function loadColumns() {
   await Excel.run(async (context) => {
     const sheetName = (document.getElementById("sheetDropdown") as HTMLSelectElement).value;
+    if (!sheetName) {
+      console.error("No sheet selected.");
+      return;
+    }
+
     const sheet = context.workbook.worksheets.getItem(sheetName);
     const range = sheet.getUsedRange();
     range.load("values, address");
@@ -53,8 +59,7 @@ async function loadColumns() {
 
     originalOrder = [...headers]; // Store the original column order
 
-    // Array to hold column objects for loading columnHidden property
-    const columns = [];
+    const columns: Excel.Range[] = [];
 
     headers.forEach((header, index) => {
       const columnDiv = document.createElement("div");
@@ -73,90 +78,52 @@ async function loadColumns() {
 
     await context.sync();
 
-    // Apply the hidden-column class based on the hidden state
     columns.forEach((column, index) => {
       const columnDiv = columnList.children[index] as HTMLElement;
       if (column.columnHidden) {
         columnDiv.classList.add("hidden-column");
       }
     });
-  });
-}
 
-// Helper function to convert column index to letter
-function getColumnLetter(index: number): string {
-  let letter = '';
-  while (index > 0) {
-    const mod = (index - 1) % 26;
-    letter = String.fromCharCode(65 + mod) + letter;
-    index = Math.floor((index - mod) / 26);
-  }
-  return letter;
-}
+    // Update lock button text based on the sheet's protection state
+    const sheetProtection = sheet.protection;
+    sheetProtection.load("protected");
+    await context.sync();
 
-
-function filterColumns(event) {
-  const query = event.target.value.toLowerCase();
-  const items = document.getElementsByClassName("column-item");
-  Array.from(items).forEach((item: HTMLElement) => {
-    if (item.textContent.toLowerCase().includes(query)) {
-      item.style.display = "block";
-    } else {
-      item.style.display = "none";
-    }
-  });
-}
-
-function sortColumns() {
-  const columnList = document.getElementById("columnList");
-  const items = Array.from(columnList.getElementsByClassName("column-item"));
-  const sortButton = document.getElementById("sortButton");
-
-  if (sortState === 0) {
-    // Reset to default order
-    items.sort((a, b) => {
-      const aName = a.textContent.split(" ")[0]; // Extract the column name
-      const bName = b.textContent.split(" ")[0]; // Extract the column name
-      return originalOrder.indexOf(aName) - originalOrder.indexOf(bName);
-    });
-    sortButton.textContent = "Sort (A-Z)";
-    sortState = 1;
-  } else if (sortState === 1) {
-    // Sort in ascending order
-    items.sort((a: HTMLElement, b: HTMLElement) => a.textContent.localeCompare(b.textContent, undefined, { caseFirst: 'lower' }));
-    sortButton.textContent = "Sort (Z-A)";
-    sortState = 2;
-  } else {
-    // Sort in descending order
-    items.sort((a: HTMLElement, b: HTMLElement) => b.textContent.localeCompare(a.textContent, undefined, { caseFirst: 'lower' }));
-    sortButton.textContent = "Reset to Default";
-    sortState = 0;
-  }
-
-  columnList.innerHTML = "";
-  items.forEach((item) => {
-    columnList.appendChild(item);
+    const toggleLockButton = document.getElementById("toggleLockButton");
+    toggleLockButton.textContent = sheetProtection.protected ? "Unlock Sheet" : "Lock Sheet";
+  }).catch(error => {
+    console.error(error);
   });
 }
 
 async function selectColumn(index: number) {
   selectedColumnIndex = index; // Update the selected column index
 
-  // Show the toggle button
-  const toggleButton = document.getElementById("toggleHideButton");
-  toggleButton.style.display = "block";
+  // Show the toggle button for hide/unhide
+  const toggleHideButton = document.getElementById("toggleHideButton");
+  toggleHideButton.style.display = "block";
 
   await Excel.run(async (context) => {
     const sheetName = (document.getElementById("sheetDropdown") as HTMLSelectElement).value;
+    if (!sheetName) {
+      console.error("No sheet selected.");
+      return;
+    }
+
     const sheet = context.workbook.worksheets.getItem(sheetName);
     const range = sheet.getUsedRange();
-    const column = range.getColumn(index);
+    range.load("values, address");
 
+    await context.sync();
+
+    const column = range.getColumn(index);
     column.load("values, columnHidden");
+
     await context.sync();
 
     // Update button text based on column's current state
-    toggleButton.textContent = column.columnHidden ? "Unhide Column" : "Hide Column";
+    toggleHideButton.textContent = column.columnHidden ? "Unhide Column" : "Hide Column";
 
     column.select();
     await context.sync();
@@ -168,12 +135,19 @@ async function selectColumn(index: number) {
     } else {
       hideColumnProfile();
     }
+  }).catch(error => {
+    console.error(error);
   });
 }
 
 async function toggleHideUnhide() {
   await Excel.run(async (context) => {
     const sheetName = (document.getElementById("sheetDropdown") as HTMLSelectElement).value;
+    if (!sheetName) {
+      console.error("No sheet selected.");
+      return;
+    }
+
     const sheet = context.workbook.worksheets.getItem(sheetName);
     const range = sheet.getUsedRange();
     const column = range.getColumn(selectedColumnIndex); // Use the selected column index
@@ -196,51 +170,102 @@ async function toggleHideUnhide() {
     } else {
       columnDiv.classList.remove("hidden-column");
     }
+  }).catch(error => {
+    console.error(error);
   });
 }
-function displayColumnProfile(values: any[][]) {
-  const totalCount = values.length;
-  const errorCount = values.filter(row => row[0] instanceof Error).length;
-  const emptyCount = values.filter(row => row[0] === null || row[0] === '').length;
-  const distinctValues = [...new Set(values.map(row => row[0]))];
-  const distinctCount = distinctValues.length;
-  const uniqueCount = distinctValues.filter(value => values.filter(row => row[0] === value).length === 1).length;
-  const nanCount = values.filter(row => typeof row[0] === 'number' && isNaN(row[0])).length;
 
-  let numericValues = values.filter(row => typeof row[0] === 'number' && !isNaN(row[0])).map(row => row[0]);
-  let minValue, maxValue, averageValue;
+async function toggleLockSheet() {
+  await Excel.run(async (context) => {
+    const sheetName = (document.getElementById("sheetDropdown") as HTMLSelectElement).value;
+    if (!sheetName) {
+      console.error("No sheet selected.");
+      return;
+    }
 
-  if (numericValues.length > 0) {
-    minValue = Math.min(...numericValues);
-    maxValue = Math.max(...numericValues);
-    averageValue = numericValues.reduce((acc, val) => acc + val, 0) / numericValues.length;
-  } else {
-    minValue = maxValue = averageValue = "N/A";
+    const sheet = context.workbook.worksheets.getItem(sheetName);
+
+    // Load the sheet protection state
+    const sheetProtection = sheet.protection;
+    sheetProtection.load("protected");
+    await context.sync();
+
+    // Toggle the protection state of the sheet
+    if (sheetProtection.protected) {
+      await sheet.protection.unprotect();
+    } else {
+      await sheet.protection.protect();
+    }
+
+    // Update button text based on the new state
+    const toggleButton = document.getElementById("toggleLockButton");
+    if (sheetProtection.protected) {
+      toggleButton.textContent = "Lock Sheet";
+    } else {
+      toggleButton.textContent = "Unlock Sheet";
+    }
+  }).catch(error => {
+    console.error(error);
+  });
+}
+
+function filterColumns() {
+  const searchTerm = (document.getElementById("searchBox") as HTMLInputElement).value.toLowerCase();
+  const columnItems = document.getElementsByClassName("column-item");
+
+  for (let i = 0; i < columnItems.length; i++) {
+    const columnItem = columnItems[i] as HTMLElement;
+    const columnName = columnItem.textContent.toLowerCase();
+    if (columnName.includes(searchTerm)) {
+      columnItem.style.display = "block";
+    } else {
+      columnItem.style.display = "none";
+    }
   }
+}
 
-  // Update the UI
-  document.getElementById("totalCount").textContent = totalCount.toString();
-  document.getElementById("errorCount").textContent = errorCount.toString();
-  document.getElementById("emptyCount").textContent = emptyCount.toString();
-  document.getElementById("distinctCount").textContent = distinctCount.toString();
-  document.getElementById("uniqueCount").textContent = uniqueCount.toString();
-  document.getElementById("nanCount").textContent = nanCount.toString();
-  document.getElementById("minValue").textContent = minValue.toString();
-  document.getElementById("maxValue").textContent = maxValue.toString();
-  document.getElementById("averageValue").textContent = averageValue.toString();
+function sortColumns() {
+  const columnList = document.getElementById("columnList");
+  const columns = Array.from(columnList.children);
 
-  // Show the column profile section
-  document.getElementById("columnProfile").style.display = "block";
+  columns.sort((a, b) => {
+    const nameA = a.textContent.toLowerCase();
+    const nameB = b.textContent.toLowerCase();
+    if (isAscending) {
+      return nameA.localeCompare(nameB);
+    } else {
+      return nameB.localeCompare(nameA);
+    }
+  });
+
+  isAscending = !isAscending; // Toggle the sort order
+
+  columns.forEach((column) => columnList.appendChild(column));
+}
+
+function toggleProfileVisibility() {
+  const showProfile = (document.getElementById("showProfileCheckbox") as HTMLInputElement).checked;
+  if (showProfile) {
+    displayColumnProfile();
+  } else {
+    hideColumnProfile();
+  }
+}
+
+function getColumnLetter(columnNumber: number): string {
+  let columnLetter = "";
+  while (columnNumber > 0) {
+    const modulo = (columnNumber - 1) % 26;
+    columnLetter = String.fromCharCode(65 + modulo) + columnLetter;
+    columnNumber = Math.floor((columnNumber - modulo) / 26);
+  }
+  return columnLetter;
+}
+
+function displayColumnProfile(values: any) {
+  // Implement logic to display column profile
 }
 
 function hideColumnProfile() {
-  // Hide the column profile section
-  document.getElementById("columnProfile").style.display = "none";
-}
-
-function toggleProfileVisibility(event) {
-  const checkbox = event.target as HTMLInputElement;
-  if (!checkbox.checked) {
-    hideColumnProfile();
-  }
+  // Implement logic to hide column profile
 }
