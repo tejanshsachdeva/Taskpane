@@ -10,9 +10,8 @@ Office.onReady((info) => {
     document.getElementById("searchBox").addEventListener("input", filterColumns);
     document.getElementById("sortButton").addEventListener("click", sortColumns);
     document.getElementById("sheetDropdown").addEventListener("change", loadColumns);
-
-    // Attach event listener for the hide/unhide button
     document.getElementById("toggleHideButton").addEventListener("click", toggleHideUnhide);
+    document.getElementById("showProfileCheckbox").addEventListener("change", toggleProfileVisibility);
 
     loadSheets();
   }
@@ -162,9 +161,13 @@ async function selectColumn(index: number) {
     column.select();
     await context.sync();
 
-    // Calculate and display column profile
-    displayColumnProfile(column.values);
-
+    // Calculate and display column profile if checkbox is checked
+    const showProfile = (document.getElementById("showProfileCheckbox") as HTMLInputElement).checked;
+    if (showProfile) {
+      displayColumnProfile(column.values);
+    } else {
+      hideColumnProfile();
+    }
   });
 }
 
@@ -225,4 +228,19 @@ function displayColumnProfile(values: any[][]) {
   document.getElementById("minValue").textContent = minValue.toString();
   document.getElementById("maxValue").textContent = maxValue.toString();
   document.getElementById("averageValue").textContent = averageValue.toString();
+
+  // Show the column profile section
+  document.getElementById("columnProfile").style.display = "block";
+}
+
+function hideColumnProfile() {
+  // Hide the column profile section
+  document.getElementById("columnProfile").style.display = "none";
+}
+
+function toggleProfileVisibility(event) {
+  const checkbox = event.target as HTMLInputElement;
+  if (!checkbox.checked) {
+    hideColumnProfile();
+  }
 }
