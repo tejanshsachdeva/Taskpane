@@ -13,6 +13,16 @@ Office.onReady((info) => {
     document.getElementById("toggleHideButton").addEventListener("click", toggleHideUnhide);
     document.getElementById("toggleLockButton").addEventListener("click", toggleLockSheet); // Always show the lock sheet button
     document.getElementById("showProfileCheckbox").addEventListener("change", toggleProfileVisibility);
+    Excel.run(async (context) => {
+      context.workbook.worksheets.onAdded.add(loadSheets);
+      context.workbook.worksheets.onDeleted.add(loadSheets);
+      context.workbook.worksheets.onChanged.add(loadSheets);
+
+      await context.sync();
+    }).catch(error => {
+      console.error(error);
+    });
+
     loadSheets();
   }
 });
