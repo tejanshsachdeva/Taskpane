@@ -20,16 +20,16 @@
         <input type="text" id="searchBox" placeholder="Search for a column.." style="margin-bottom: 10px;" />
         <div id="columnList"></div>
         <button id="toggleHideButton" style="display: none;">Hide Column</button>
-        <button id="toggleLockButton">Lock Sheet</button> <!-- Changed text and removed inline style -->
+        <button id="toggleLockButton" style="margin-top: 10px;">Lock Sheet</button>
 
         <!-- Checkbox for showing column profile -->
-        <div>
+        <div style="margin-top: 10px;">
             <input type="checkbox" id="showProfileCheckbox" />
             <label for="showProfileCheckbox">Show Column Profile</label>
         </div>
 
         <!-- Column Profile Section -->
-        <div id="columnProfile" style="display: none;">
+        <div id="columnProfile" style="display: none; border: 1px solid #ccc; padding: 10px; border-radius: 2px; background-color: white; margin-top: 10px; max-height: 300px; overflow-y: auto;">
             <h3>Column Profile</h3>
             <p>Total Count: <span id="totalCount"></span></p>
             <p>Errors: <span id="errorCount"></span></p>

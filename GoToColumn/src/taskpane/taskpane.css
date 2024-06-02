@@ -1,76 +1,76 @@
 #dropdownContainer {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Added to evenly distribute the dropdown and sort button */
+  justify-content: space-between; /* Evenly distribute the dropdown and sort button */
   margin-bottom: 10px;
 }
 
-#sheetDropdown {
-  margin-right: 10px;
-  padding: 5px 10px;
-  background-color: #0078d4;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-#sortButton {
-  padding: 5px 10px;
-  background-color: #0078d4;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-#sortButton:hover {
-  background-color: #005a9e;
-}
-
+#sheetDropdown,
+#sortButton,
 #toggleHideButton,
-#toggleLockButton { /* Added to target both buttons */
-  margin-top: 10px;
+#toggleLockButton {
   padding: 5px 10px;
-  background-color: #0078d4;
+  background-color: #0078d4; /* Default Excel theme color */
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 2px; /* Slightly less rounded corners */
   cursor: pointer;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+#sheetDropdown:hover,
+#sortButton:hover,
 #toggleHideButton:hover,
-#toggleLockButton:hover { /* Added to target both buttons */
-  background-color: #005a9e;
+#toggleLockButton:hover {
+  background-color: #005a9e; /* Darker shade for hover */
 }
 
-/* Other existing styles */
+#toggleHideButton {
+  margin-top: 10px;
+  margin-right: 10px; /* Added margin-right for spacing */
+}
+
+#toggleLockButton {
+  margin-top: 10px;
+}
 
 #searchBox {
   margin-bottom: 10px;
   width: 98%;
   padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
 }
 
 #columnList {
   max-height: 300px;
   overflow-y: auto;
   border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 2px;
+}
+
+#columnProfile {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 2px;
+  background-color: white;
+  margin-top: 10px;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .column-item {
   padding: 5px;
   cursor: pointer;
+  border-bottom: 1px solid #e1e1e1;
 }
 
 .column-item:hover {
-  background-color: #f0f0f0;
+  background-color: #f3f2f1;
 }
 
-.column-item.hidden {
-  color: red;
-}
-
+.column-item.hidden,
 .hidden-column {
   color: red;
 }
@@ -87,7 +87,7 @@
 
 b {
   font-weight: bold;
-  font-color: white;
+  color: white; /* Corrected property name */
 }
 
 html,
@@ -96,6 +96,8 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f3f2f1; /* Light grey background to match Excel */
 }
 
 ul {
@@ -107,23 +109,16 @@ ul {
   padding: 20px;
   padding-bottom: 30px;
   padding-top: 100px;
-  display: -webkit-flex;
   display: flex;
-  -webkit-flex-direction: column;
   flex-direction: column;
   align-items: center;
 }
 
 .ms-welcome__main {
-  display: -webkit-flex;
   display: flex;
-  -webkit-flex-direction: column;
   flex-direction: column;
-  -webkit-flex-wrap: nowrap;
   flex-wrap: nowrap;
-  -webkit-align-items: center;
   align-items: center;
-  -webkit-flex: 1 0 0;
   flex: 1 0 0;
   padding: 10px 20px;
 }
@@ -140,7 +135,6 @@ ul {
 
 .ms-welcome__features.ms-List .ms-ListItem {
   padding-bottom: 20px;
-  display: -webkit-flex;
   display: flex;
 }
 
