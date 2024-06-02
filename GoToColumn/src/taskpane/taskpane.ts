@@ -42,11 +42,6 @@ async function loadSheets() {
 async function loadColumns() {
   await Excel.run(async (context) => {
     const sheetName = (document.getElementById("sheetDropdown") as HTMLSelectElement).value;
-    if (!sheetName) {
-      console.error("No sheet selected.");
-      return;
-    }
-
     const sheet = context.workbook.worksheets.getItem(sheetName);
     const range = sheet.getUsedRange();
     range.load("values, address");
@@ -57,9 +52,10 @@ async function loadColumns() {
     const columnList = document.getElementById("columnList");
     columnList.innerHTML = "";
 
-    originalOrder = [...headers]; // Store the original column order
+    originalOrder = headers.map(header => `${header}`); // Store the original column order
 
-    const columns: Excel.Range[] = [];
+    // Array to hold column objects for loading columnHidden property
+    const columns = [];
 
     headers.forEach((header, index) => {
       const columnDiv = document.createElement("div");
@@ -78,6 +74,7 @@ async function loadColumns() {
 
     await context.sync();
 
+    // Apply the hidden-column class based on the hidden state
     columns.forEach((column, index) => {
       const columnDiv = columnList.children[index] as HTMLElement;
       if (column.columnHidden) {
@@ -226,22 +223,36 @@ function filterColumns() {
 
 function sortColumns() {
   const columnList = document.getElementById("columnList");
-  const columns = Array.from(columnList.children);
+  const items = Array.from(columnList.getElementsByClassName("column-item"));
+  const sortButton = document.getElementById("sortButton");
 
-  columns.sort((a, b) => {
-    const nameA = a.textContent.toLowerCase();
-    const nameB = b.textContent.toLowerCase();
-    if (isAscending) {
-      return nameA.localeCompare(nameB);
-    } else {
-      return nameB.localeCompare(nameA);
-    }
+  if (sortState === 0) {
+    // Reset to default order
+    items.sort((a, b) => {
+      const aName = a.textContent.split(" (")[0]; // Extract the column name
+      const bName = b.textContent.split(" (")[0]; // Extract the column name
+      return originalOrder.indexOf(aName) - originalOrder.indexOf(bName);
+    });
+    sortButton.textContent = "Sort (A-Z)";
+    sortState = 1;
+  } else if (sortState === 1) {
+    // Sort in ascending order
+    items.sort((a: HTMLElement, b: HTMLElement) => a.textContent.localeCompare(b.textContent, undefined, { caseFirst: 'lower' }));
+    sortButton.textContent = "Sort (Z-A)";
+    sortState = 2;
+  } else {
+    // Sort in descending order
+    items.sort((a: HTMLElement, b: HTMLElement) => b.textContent.localeCompare(a.textContent, undefined, { caseFirst: 'lower' }));
+    sortButton.textContent = "Reset to Default";
+    sortState = 0;
+  }
+
+  columnList.innerHTML = "";
+  items.forEach((item) => {
+    columnList.appendChild(item);
   });
-
-  isAscending = !isAscending; // Toggle the sort order
-
-  columns.forEach((column) => columnList.appendChild(column));
 }
+
 
 
 function getColumnLetter(columnNumber: number): string {
