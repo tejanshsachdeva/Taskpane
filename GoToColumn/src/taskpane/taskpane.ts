@@ -51,7 +51,7 @@ async function loadColumns() {
     const columnList = document.getElementById("columnList");
     columnList.innerHTML = "";
 
-    originalOrder = [...headers]; // Store the original column order
+    originalOrder = headers.map(header => `${header}`); // Store the original column order
 
     // Array to hold column objects for loading columnHidden property
     const columns = [];
@@ -82,6 +82,8 @@ async function loadColumns() {
     });
   });
 }
+
+
 
 // Helper function to convert column index to letter
 function getColumnLetter(index: number): string {
@@ -115,8 +117,8 @@ function sortColumns() {
   if (sortState === 0) {
     // Reset to default order
     items.sort((a, b) => {
-      const aName = a.textContent.split(" ")[0]; // Extract the column name
-      const bName = b.textContent.split(" ")[0]; // Extract the column name
+      const aName = a.textContent.split(" (")[0]; // Extract the column name
+      const bName = b.textContent.split(" (")[0]; // Extract the column name
       return originalOrder.indexOf(aName) - originalOrder.indexOf(bName);
     });
     sortButton.textContent = "Sort (A-Z)";
@@ -138,6 +140,8 @@ function sortColumns() {
     columnList.appendChild(item);
   });
 }
+
+
 
 async function selectColumn(index: number) {
   selectedColumnIndex = index; // Update the selected column index
