@@ -13,11 +13,10 @@ Office.onReady((info) => {
     document.getElementById("toggleHideButton").addEventListener("click", toggleHideUnhide);
     document.getElementById("toggleLockButton").addEventListener("click", toggleLockSheet); // Always show the lock sheet button
     document.getElementById("showProfileCheckbox").addEventListener("change", toggleProfileVisibility);
-    // document.getElementById("refreshButton").addEventListener("click", refreshAddIn); // Add this line
-
     loadSheets();
   }
 });
+
 async function loadSheets() {
   await Excel.run(async (context) => {
     const sheets = context.workbook.worksheets;
@@ -32,6 +31,9 @@ async function loadSheets() {
       option.text = sheet.name;
       option.value = sheet.name;
       sheetDropdown.appendChild(option);
+
+      // Register the onChanged event handler for each sheet
+      sheet.onChanged.add(loadColumns);
     });
 
     // Load columns for the initially selected sheet
@@ -93,6 +95,7 @@ async function loadColumns() {
     console.error(error);
   });
 }
+
 
 async function selectColumn(index: number) {
   selectedColumnIndex = index; // Update the selected column index
