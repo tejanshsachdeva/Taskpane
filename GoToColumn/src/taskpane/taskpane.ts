@@ -72,7 +72,7 @@ async function loadColumns() {
     headers.forEach((header, index) => {
       const columnDiv = document.createElement("div");
       const columnLetter = getColumnLetter(index + 1); // Get column letter
-      columnDiv.textContent = `${header} (${columnLetter})` || "<missing name>";
+      columnDiv.textContent = `${header || '<missing name>'} (${columnLetter})`; // Handle missing header
       columnDiv.classList.add("column-item");
 
       // Load column hidden state
@@ -105,7 +105,6 @@ async function loadColumns() {
     console.error(error);
   });
 }
-
 
 async function selectColumn(index: number) {
   selectedColumnIndex = index; // Update the selected column index
@@ -238,12 +237,11 @@ function sortColumns() {
   const columnList = document.getElementById("columnList");
   const items = Array.from(columnList.getElementsByClassName("column-item"));
   const sortButton = document.getElementById("sortButton");
-
   if (sortState === 0) {
     // Reset to default order
     items.sort((a, b) => {
-      const aName = a.textContent.split(" (")[0]; // Extract the column name
-      const bName = b.textContent.split(" (")[0]; // Extract the column name
+      const aName = a.textContent.split(" ")[0]; // Extract the column name
+      const bName = b.textContent.split(" ")[0]; // Extract the column name
       return originalOrder.indexOf(aName) - originalOrder.indexOf(bName);
     });
     sortButton.textContent = "Sort (A-Z)";
@@ -259,7 +257,6 @@ function sortColumns() {
     sortButton.textContent = "Reset to Default";
     sortState = 0;
   }
-
   columnList.innerHTML = "";
   items.forEach((item) => {
     columnList.appendChild(item);
