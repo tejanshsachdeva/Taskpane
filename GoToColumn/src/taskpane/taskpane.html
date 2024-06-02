@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
@@ -14,7 +14,7 @@
     <div id="container">
         <!-- Wrap the dropdown and button in a container div -->
         <div id="dropdownContainer" style="display: flex; justify-content: space-between;">
-            <select id="sheetDropdown"></select>
+            <select id="sheetDropdown" title="Select Sheet"></select>
             <button id="sortButton">Sort (A-Z)</button>
         </div>
         <input type="text" id="searchBox" placeholder="Search for a column.." style="margin-bottom: 10px;" />
@@ -44,7 +44,7 @@
     </div>
 
     <section id="sideload-msg" class="ms-welcome__main">
-        <h2 class="ms-font-xl">Please <a target="_blank" href="https://learn.microsoft.com/office/dev/add-ins/testing/test-debug-office-add-ins#sideload-an-office-add-in-for-testing">sideload</a> your add-in to see app body.</h2>
+        <h2 class="ms-font-xl">Please <a target="_blank" href="https://learn.microsoft.com/office/dev/add-ins/testing/test-debug-office-add-ins#sideload-an-office-add-in-for-testing" rel="noopener">sideload</a> your add-in to see app body.</h2>
     </section>
     <main id="app-body" class="ms-welcome__main" style="display: none;">
         <p><label id="item-subject"></label></p>
