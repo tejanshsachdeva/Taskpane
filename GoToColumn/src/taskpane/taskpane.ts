@@ -33,7 +33,9 @@ async function loadSheets() {
     sheets.load("items/name");
     await context.sync();
 
-    const sheetDropdown = document.getElementById("sheetDropdown");
+    const sheetDropdown = document.getElementById("sheetDropdown") as HTMLSelectElement;
+    const currentSheetName = sheetDropdown.value; // Store the currently selected sheet name
+
     sheetDropdown.innerHTML = "";
 
     sheets.items.forEach((sheet) => {
@@ -46,7 +48,14 @@ async function loadSheets() {
       sheet.onChanged.add(loadColumns);
     });
 
-    // Load columns for the initially selected sheet
+    // Restore the previously selected sheet, or select the first sheet if none was previously selected
+    if (currentSheetName && sheets.items.some(sheet => sheet.name === currentSheetName)) {
+      sheetDropdown.value = currentSheetName;
+    } else {
+      sheetDropdown.selectedIndex = 0;
+    }
+
+    // Load columns for the currently selected sheet
     loadColumns();
   });
 }
