@@ -72,7 +72,7 @@ async function loadColumns() {
     headers.forEach((header, index) => {
       const columnDiv = document.createElement("div");
       const columnLetter = getColumnLetter(index + 1); // Get column letter
-      columnDiv.textContent = `${header || '<missing name>'} (${columnLetter})`; // Handle missing header
+      columnDiv.textContent = `${header || '<missing name>'} (${columnLetter}-${index + 1})`; // Handle missing header
       columnDiv.classList.add("column-item");
 
       // Load column hidden state
@@ -105,6 +105,7 @@ async function loadColumns() {
     console.error(error);
   });
 }
+
 
 async function selectColumn(index: number) {
   selectedColumnIndex = index; // Update the selected column index
@@ -276,7 +277,7 @@ function getColumnLetter(columnNumber: number): string {
 }
 
 function displayColumnProfile(values: any[][]) {
-  const totalCount = values.length;
+  const totalCount = values.length - 1; // Exclude the column name cell
   const errorCount = values.filter(row => row[0] instanceof Error).length;
   const emptyCount = values.filter(row => row[0] === null || row[0] === '').length;
   const distinctValues = [...new Set(values.map(row => row[0]))];
@@ -285,14 +286,15 @@ function displayColumnProfile(values: any[][]) {
   const nanCount = values.filter(row => typeof row[0] === 'number' && isNaN(row[0])).length;
 
   let numericValues = values.filter(row => typeof row[0] === 'number' && !isNaN(row[0])).map(row => row[0]);
-  let minValue, maxValue, averageValue;
+  let minValue, maxValue, averageValue, sumValue;
 
   if (numericValues.length > 0) {
-    minValue = Math.min(...numericValues);
-    maxValue = Math.max(...numericValues);
-    averageValue = numericValues.reduce((acc, val) => acc + val, 0) / numericValues.length;
+    minValue = Math.min(...numericValues).toFixed(2);
+    maxValue = Math.max(...numericValues).toFixed(2);
+    averageValue = (numericValues.reduce((acc, val) => acc + val, 0) / numericValues.length).toFixed(2);
+    sumValue = numericValues.reduce((acc, val) => acc + val, 0).toFixed(2);
   } else {
-    minValue = maxValue = averageValue = "N/A";
+    minValue = maxValue = averageValue = sumValue = "N/A";
   }
 
   // Update the UI
@@ -305,10 +307,12 @@ function displayColumnProfile(values: any[][]) {
   document.getElementById("minValue").textContent = minValue.toString();
   document.getElementById("maxValue").textContent = maxValue.toString();
   document.getElementById("averageValue").textContent = averageValue.toString();
+  document.getElementById("sumValue").textContent = sumValue.toString(); // Add this line to display the sum
 
   // Show the column profile section
   document.getElementById("columnProfile").style.display = "block";
 }
+
 
 function hideColumnProfile() {
   // Hide the column profile section
