@@ -243,16 +243,23 @@ function filterColumns() {
   }
 }
 
+//c1
 function sortColumns() {
   const columnList = document.getElementById("columnList");
   const items = Array.from(columnList.getElementsByClassName("column-item"));
   const sortButton = document.getElementById("sortButton");
+
   if (sortState === 0) {
-    // Reset to default order
+    // Reset to default order based on the number in parentheses (second last character)
     items.sort((a, b) => {
-      const aName = a.textContent.split(" ")[0]; // Extract the column name
-      const bName = b.textContent.split(" ")[0]; // Extract the column name
-      return originalOrder.indexOf(aName) - originalOrder.indexOf(bName);
+      const aText = a.textContent;
+      const bText = b.textContent;
+
+      // Extract the number in parentheses (format: 'name (X-Y)')
+      const aNumber = parseInt(aText.match(/\(([^-]+)-(\d+)\)/)[2], 10);
+      const bNumber = parseInt(bText.match(/\(([^-]+)-(\d+)\)/)[2], 10);
+
+      return aNumber - bNumber;
     });
     sortButton.textContent = "Sort (A-Z)";
     sortState = 1;
@@ -267,6 +274,7 @@ function sortColumns() {
     sortButton.textContent = "Reset to Default";
     sortState = 0;
   }
+
   columnList.innerHTML = "";
   items.forEach((item) => {
     columnList.appendChild(item);
