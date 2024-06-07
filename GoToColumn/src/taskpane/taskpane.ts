@@ -294,27 +294,57 @@ function getColumnLetter(columnNumber: number): string {
 }
 
 function displayColumnProfile(values: any[][]) {
-  const totalCount = values.length - 1; // Exclude the column name cell
-  const errorCount = values.filter(row => row[0] instanceof Error).length;
-  const emptyCount = values.filter(row => row[0] === null || row[0] === '').length;
-  const distinctValues = [...new Set(values.map(row => row[0]))];
-  const distinctCount = distinctValues.length;
-  const uniqueCount = distinctValues.filter(value => values.filter(row => row[0] === value).length === 1).length;
-  const nanCount = values.filter(row => typeof row[0] === 'number' && isNaN(row[0])).length;
+  const dataRows = values.slice(1);
+  const totalCount = dataRows.length;
 
-  let numericValues = values.filter(row => typeof row[0] === 'number' && !isNaN(row[0])).map(row => row[0]);
-  let minValue, maxValue, averageValue, sumValue;
+  let errorCount = 0;
+  let emptyCount = 0;
+  let uniqueCount = 0;
+  let nanCount = 0;
+  let numericValues: number[] = [];
+  let dateValues: Date[] = [];
+  let distinctMap = new Map();
+
+  dataRows.forEach(row => {
+    const value = row[0];
+    if (value === null || value === '') {
+      emptyCount++;
+    } else if (isErrorValue(value)) {
+      errorCount++;
+    } else if (typeof value === 'number') {
+      if (isNaN(value)) {
+        nanCount++;
+      } else {
+        numericValues.push(value);
+      }
+    } else if (typeof value === 'string' && isValidDate(value)) {
+      dateValues.push(parseDateString(value));
+    }
+
+    distinctMap.set(value, (distinctMap.get(value) || 0) + 1);
+  });
+
+  distinctMap.forEach((count, value) => {
+    if (count === 1) uniqueCount++;
+  });
+
+  const distinctCount = distinctMap.size;
+
+  let minValue: string | number, maxValue: string | number, sumValue: number | string = "N/A", averageValue: number | string = "N/A";
 
   if (numericValues.length > 0) {
     minValue = Math.min(...numericValues).toFixed(2);
     maxValue = Math.max(...numericValues).toFixed(2);
-    averageValue = (numericValues.reduce((acc, val) => acc + val, 0) / numericValues.length).toFixed(2);
-    sumValue = numericValues.reduce((acc, val) => acc + val, 0).toFixed(2);
+    sumValue = numericValues.reduce((acc, val) => acc + val, 0);
+    averageValue = (sumValue / numericValues.length).toFixed(2);
+    sumValue = sumValue.toFixed(2);
+  } else if (dateValues.length > 0) {
+    minValue = new Date(Math.min(...dateValues.map(date => date.getTime()))).toLocaleDateString();
+    maxValue = new Date(Math.max(...dateValues.map(date => date.getTime()))).toLocaleDateString();
   } else {
-    minValue = maxValue = averageValue = sumValue = "N/A";
+    minValue = maxValue = "N/A";
   }
 
-  // Update the UI
   document.getElementById("totalCount").textContent = totalCount.toString();
   document.getElementById("errorCount").textContent = errorCount.toString();
   document.getElementById("emptyCount").textContent = emptyCount.toString();
@@ -324,11 +354,13 @@ function displayColumnProfile(values: any[][]) {
   document.getElementById("minValue").textContent = minValue.toString();
   document.getElementById("maxValue").textContent = maxValue.toString();
   document.getElementById("averageValue").textContent = averageValue.toString();
-  document.getElementById("sumValue").textContent = sumValue.toString(); // Add this line to display the sum
+  document.getElementById("sumValue").textContent = sumValue.toString();
 
-  // Show the column profile section
   document.getElementById("columnProfile").style.display = "block";
 }
+
+
+
 
 
 function hideColumnProfile() {
@@ -336,9 +368,20 @@ function hideColumnProfile() {
   document.getElementById("columnProfile").style.display = "none";
 }
 
+function isValidDate(dateString: string): boolean {
+  return !isNaN(Date.parse(dateString));
+}
 function toggleProfileVisibility(event) {
   const checkbox = event.target as HTMLInputElement;
   if (!checkbox.checked) {
     hideColumnProfile();
   }
+}
+
+function parseDateString(dateString: string): Date {
+  return new Date(dateString);
+}
+
+function isErrorValue(value: any): boolean {
+  return value instanceof Error || (typeof value === 'string' && value.startsWith("#"));
 }
