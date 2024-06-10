@@ -338,7 +338,7 @@ function displayColumnProfile(values: any[][]) {
     sumValue = numericValues.reduce((acc, val) => acc + val, 0);
     averageValue = (sumValue / numericValues.length).toFixed(2);
     sumValue = sumValue.toFixed(2);
-  } else if (dateValues.length > 0) {
+  } else if (dateValues.length > 0) { 
     minValue = new Date(Math.min(...dateValues.map(date => date.getTime()))).toLocaleDateString();
     maxValue = new Date(Math.max(...dateValues.map(date => date.getTime()))).toLocaleDateString();
   } else {
