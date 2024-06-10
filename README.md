@@ -33,7 +33,7 @@ The Excel Column Navigator Add-In is designed to enhance the user experience in 
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/yourusername/excel-column-navigator.git
+   git clone https://github.com/tejanshsachdeva/Taskpane.git
    cd excel-column-navigator
    ```
 
@@ -56,7 +56,7 @@ The Excel Column Navigator Add-In is designed to enhance the user experience in 
 ### Sideloading the Add-In
 
 1. **Download the Manifest File**
-   - [Download manifest.xml](link-to-your-manifest.xml)
+   - [Download manifest.xml](https://github.com/tejanshsachdeva/Taskpane/blob/main/GoToColumn/manifest.xml)
 
 2. **Sideload the Add-In**
    - Open Excel and go to `File -> Options -> Trust Center -> Trust Center Settings -> Trusted Add-in Catalogs`.
