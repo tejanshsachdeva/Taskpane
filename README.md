@@ -34,7 +34,7 @@ The Excel Column Navigator Add-In is designed to enhance the user experience in 
 1. **Clone the Repository**
    ```bash
    git clone https://github.com/tejanshsachdeva/Taskpane.git
-   cd excel-column-navigator
+   cd GoToColumn
    ```
 
 2. **Install Dependencies**
