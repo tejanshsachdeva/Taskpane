@@ -216,7 +216,6 @@ async function toggleLockSheet() {
       await sheet.protection.protect();
     }
 
-    // Update button text based on the new state
     const toggleButton = document.getElementById("toggleLockButton");
     if (sheetProtection.protected) {
       toggleButton.textContent = "Lock Sheet";
