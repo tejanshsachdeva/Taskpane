@@ -26,3 +26,41 @@ The Excel Column Navigator Add-In is designed to enhance the user experience in 
 ### User Interface
 - **Fabric UI Integration**: Adopts Microsoft’s design language for a consistent and professional look.
 - **UI/UX Polishing**: Ensures an intuitive and user-friendly interface with minimal learning curve.
+
+## Getting Started
+
+### Cloning the Repository and Running Locally
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/yourusername/excel-column-navigator.git
+   cd excel-column-navigator
+   ```
+
+2. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Initialize the Project**
+   ```bash
+   npm init
+   ```
+
+4. **Run the Add-In Locally**
+   ```bash
+   npm run start
+   ```
+   This will start a local server and open Excel with the add-in loaded.
+
+### Sideloading the Add-In
+
+1. **Download the Manifest File**
+   - [Download manifest.xml](link-to-your-manifest.xml)
+
+2. **Sideload the Add-In**
+   - Open Excel and go to `File -> Options -> Trust Center -> Trust Center Settings -> Trusted Add-in Catalogs`.
+   - Add the URL of the folder where `manifest.xml` is located.
+   - Go to `Insert -> My Add-ins -> See All... -> SHARED FOLDER` and select your add-in.
+
+By following these steps, you can easily clone the repository and run the add-in locally, or sideload the add-in using the manifest file to start using the Excel Column Navigator Add-In.
