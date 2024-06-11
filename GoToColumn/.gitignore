@@ -1,4 +1,4 @@
 node_modules
 .vscode
 dist
-manifest_test.xml
+manifest_final.xml
