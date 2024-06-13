@@ -7,7 +7,7 @@ The Excel Column Navigator Add-In is designed to enhance the user experience in 
 ## Features
 
 ### Column Navigation
-- **Vertical Column Display**: View all columns in a vertical fashion within a pop-up, making navigation simpler and more intuitive.
+- **Vertical Column Display**: View all columns vertically within a pop-up, making navigation simpler and more intuitive.
 - **Find Feature**: Quickly locate columns by name using the search functionality.
 - **Multi-Sheet Dropdown**: Seamlessly navigate and manage columns across multiple sheets within a workbook.
 - **Column Profile**: Provides detailed statistics for selected columns, including minimum, maximum, and average values.
@@ -25,7 +25,7 @@ The Excel Column Navigator Add-In is designed to enhance the user experience in 
 
 ### User Interface
 - **Fabric UI Integration**: Adopts Microsoft’s design language for a consistent and professional look.
-- **UI/UX Polishing**: Ensures an intuitive and user-friendly interface with minimal learning curve.
+- **UI/UX Polishing**: Ensures an intuitive, user-friendly interface with minimal learning curve.
 
 ## Getting Started
 
@@ -56,11 +56,11 @@ The Excel Column Navigator Add-In is designed to enhance the user experience in 
 ### Sideloading the Add-In
 
 1. **Download the Manifest File**
-   - [Download manifest.xml](https://github.com/tejanshsachdeva/Taskpane/blob/main/GoToColumn/manifest.xml)
+   - [Manifest File + Documentation](https://drive.google.com/drive/folders/1hInO0tXNOObXB88Kw5Bz1HFcQ7fjUm6g?usp=sharing)
 
 2. **Sideload the Add-In**
    - Open Excel and go to `File -> Options -> Trust Center -> Trust Center Settings -> Trusted Add-in Catalogs`.
    - Add the URL of the folder where `manifest.xml` is located.
    - Go to `Insert -> My Add-ins -> See All... -> SHARED FOLDER` and select your add-in.
 
-By following these steps, you can easily clone the repository and run the add-in locally, or sideload the add-in using the manifest file to start using the Excel Column Navigator Add-In.
+Following these steps, you can easily clone the repository and run the add-in locally or sideload the add-in using the manifest file to start using the Excel Column Navigator Add-In.
